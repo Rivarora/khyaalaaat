@@ -93,10 +93,31 @@ const PoetryCard = ({
             >
               <Heart className={`w-6 h-6 ${liked ? "fill-current" : ""}`} />
             </Button>
-            <Button variant="ghost" size="sm" className="p-0 text-muted-foreground hover:text-primary hover:scale-110 transition-transform">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="p-0 text-muted-foreground hover:text-primary hover:scale-110 transition-transform"
+              onClick={() => alert("Open comments section (not implemented)")}
+            >
               <MessageCircle className="w-6 h-6" />
             </Button>
-            <Button variant="ghost" size="sm" className="p-0 text-muted-foreground hover:text-primary hover:scale-110 transition-transform">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="p-0 text-muted-foreground hover:text-primary hover:scale-110 transition-transform"
+              onClick={() => {
+                if (navigator.share) {
+                  navigator.share({
+                    title: "Check out this poetry!",
+                    text: caption || "",
+                    url: window.location.href,
+                  });
+                } else {
+                  navigator.clipboard.writeText(window.location.href);
+                  alert("Link copied to clipboard!");
+                }
+              }}
+            >
               <Share2 className="w-6 h-6" />
             </Button>
           </div>
