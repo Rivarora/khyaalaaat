@@ -117,16 +117,28 @@ const PoetryCard = ({
               variant="ghost"
               size="sm"
               className="p-0 text-muted-foreground hover:text-primary hover:scale-110 transition-transform"
-              onClick={() => {
+              onClick={async () => {
+                const shareData = {
+                  title: "Check out this poetry!",
+                  text: caption || "",
+                  url: window.location.href,
+                };
                 if (navigator.share) {
-                  navigator.share({
-                    title: "Check out this poetry!",
-                    text: caption || "",
-                    url: window.location.href,
-                  });
+                  try {
+                    await navigator.share(shareData);
+                  } catch (err) {
+                    // User cancelled or error occurred
+                  }
+                } else if (navigator.clipboard) {
+                  try {
+                    await navigator.clipboard.writeText(window.location.href);
+                    alert("Link copied to clipboard!");
+                  } catch (err) {
+                    alert("Failed to copy link. Please copy it manually.");
+                  }
                 } else {
-                  navigator.clipboard.writeText(window.location.href);
-                  alert("Link copied to clipboard!");
+                  // Fallback for very old browsers
+                  prompt("Copy this link:", window.location.href);
                 }
               }}
             >
