@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Heart, MessageCircle, Share2, Bookmark, MoreHorizontal } from "lucide-react";
+import { Heart, MessageCircle, Share2, Bookmark, MoreHorizontal, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useLikes } from "@/hooks/useLikes";
@@ -32,6 +32,7 @@ const PoetryCard = ({
   const [liked, setLiked] = useState(isLiked);
   const [bookmarked, setBookmarked] = useState(isBookmarked);
   const [likeCount, setLikeCount] = useState(likes);
+  const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
   const { toggleLike, loading } = useLikes();
 
   const handleLike = async () => {
@@ -47,6 +48,9 @@ const PoetryCard = ({
   const handleBookmark = () => {
     setBookmarked(!bookmarked);
   };
+
+  const openComments = () => setIsCommentModalOpen(true);
+  const closeComments = () => setIsCommentModalOpen(false);
 
   return (
     <div className="bg-card rounded-xl shadow-card overflow-hidden group hover:shadow-gold transition-all duration-300 animate-fade-in">
@@ -97,7 +101,7 @@ const PoetryCard = ({
               variant="ghost"
               size="sm"
               className="p-0 text-muted-foreground hover:text-primary hover:scale-110 transition-transform"
-              onClick={() => alert("Open comments section (not implemented)")}
+              onClick={openComments}
             >
               <MessageCircle className="w-6 h-6" />
             </Button>
@@ -151,12 +155,40 @@ const PoetryCard = ({
           <Button
             variant="ghost"
             className="p-0 h-auto mt-2 text-muted-foreground hover:text-primary"
-            onClick={() => alert("Show all comments (not implemented)")}
+            onClick={openComments}
           >
             View all {comments} comments
           </Button>
         )}
       </div>
+
+      {/* Comment Modal */}
+      {isCommentModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-white dark:bg-card rounded-lg shadow-lg p-6 w-full max-w-md relative">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute top-2 right-2"
+              onClick={closeComments}
+            >
+              <X className="w-5 h-5" />
+            </Button>
+            <h2 className="text-lg font-semibold mb-4">Comments</h2>
+            {/* Replace below with your actual comments UI */}
+            <div className="text-muted-foreground mb-4">Comments functionality coming soon.</div>
+            <input
+              type="text"
+              placeholder="Add a comment..."
+              className="w-full border rounded px-3 py-2 mb-2"
+              disabled
+            />
+            <Button className="w-full" disabled>
+              Post
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
