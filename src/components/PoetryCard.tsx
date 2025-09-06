@@ -33,6 +33,8 @@ const PoetryCard = ({
   const [bookmarked, setBookmarked] = useState(isBookmarked);
   const [likeCount, setLikeCount] = useState(likes);
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
+  const [commentInput, setCommentInput] = useState("");
+  const [commentList, setCommentList] = useState<string[]>([]);
   const { toggleLike, loading } = useLikes();
 
   const handleLike = async () => {
@@ -51,6 +53,12 @@ const PoetryCard = ({
 
   const openComments = () => setIsCommentModalOpen(true);
   const closeComments = () => setIsCommentModalOpen(false);
+
+  const handleAddComment = () => {
+    if (commentInput.trim() === "") return;
+    setCommentList([commentInput, ...commentList]);
+    setCommentInput("");
+  };
 
   return (
     <div className="bg-card rounded-xl shadow-card overflow-hidden group hover:shadow-gold transition-all duration-300 animate-fade-in">
@@ -175,15 +183,30 @@ const PoetryCard = ({
               <X className="w-5 h-5" />
             </Button>
             <h2 className="text-lg font-semibold mb-4">Comments</h2>
-            {/* Replace below with your actual comments UI */}
-            <div className="text-muted-foreground mb-4">Comments functionality coming soon.</div>
+            <div className="mb-4 max-h-60 overflow-y-auto">
+              {commentList.length === 0 ? (
+                <div className="text-muted-foreground">No comments yet. Be the first to comment!</div>
+              ) : (
+                commentList.map((c, i) => (
+                  <div key={i} className="mb-2 p-2 rounded bg-muted">
+                    <span className="font-medium text-card-foreground">You:</span>{" "}
+                    <span className="text-card-foreground">{c}</span>
+                  </div>
+                ))
+              )}
+            </div>
             <input
               type="text"
               placeholder="Add a comment..."
               className="w-full border rounded px-3 py-2 mb-2"
-              disabled
+              value={commentInput}
+              onChange={e => setCommentInput(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === "Enter") handleAddComment();
+              }}
+              autoFocus
             />
-            <Button className="w-full" disabled>
+            <Button className="w-full" onClick={handleAddComment} disabled={commentInput.trim() === ""}>
               Post
             </Button>
           </div>
