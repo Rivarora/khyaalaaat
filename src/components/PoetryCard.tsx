@@ -151,6 +151,7 @@ const PoetryCard = ({
           <Button
             variant="ghost"
             className="p-0 h-auto mt-2 text-muted-foreground hover:text-primary"
+            onClick={() => alert("Show all comments (not implemented)")}
           >
             View all {comments} comments
           </Button>
