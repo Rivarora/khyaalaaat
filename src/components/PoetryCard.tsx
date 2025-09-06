@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Heart, MessageCircle, Share2, Bookmark, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { useLikes } from "@/hooks/useLikes";
 
 interface PoetryCardProps {
   id: string;
@@ -19,6 +20,7 @@ interface PoetryCardProps {
 }
 
 const PoetryCard = ({
+  id,
   imageUrl,
   caption,
   author,
@@ -30,14 +32,15 @@ const PoetryCard = ({
   const [liked, setLiked] = useState(isLiked);
   const [bookmarked, setBookmarked] = useState(isBookmarked);
   const [likeCount, setLikeCount] = useState(likes);
+  const { toggleLike, loading } = useLikes();
 
-  const handleLike = () => {
-    if (liked) {
-      setLiked(false);
-      setLikeCount(prev => prev - 1);
-    } else {
-      setLiked(true);
-      setLikeCount(prev => prev + 1);
+  const handleLike = async () => {
+    if (loading) return;
+    
+    const success = await toggleLike(id, liked);
+    if (success) {
+      setLiked(!liked);
+      setLikeCount(liked ? likeCount - 1 : likeCount + 1);
     }
   };
 

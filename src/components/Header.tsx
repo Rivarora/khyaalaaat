@@ -1,114 +1,150 @@
 import { useState } from "react";
-import { Search, Heart, User, Menu, X, Plus, Bell } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Search, Plus, Bell, Menu, User, LogOut } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import UploadModal from "./UploadModal";
+import poetryLogo from "@/assets/poetry-logo.png";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleUploadSuccess = () => {
+    // Refresh the page to show new posts
+    window.location.reload();
+  };
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate('/')}>
             <img 
-              src="/src/assets/poetry-logo.png" 
-              alt="PoetryVerse" 
-              className="w-8 h-8 rounded-lg"
+              src={poetryLogo} 
+              alt="Poetry App" 
+              className="w-8 h-8"
             />
-            <h1 className="text-xl font-heading font-semibold text-primary">
-              PoetryVerse
+            <h1 className="text-xl font-heading font-semibold text-primary hidden sm:block">
+              Poetry
             </h1>
           </div>
 
-          {/* Desktop Search */}
-          <div className="hidden md:flex flex-1 max-w-md mx-8">
-            <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-              <Input
-                placeholder="Search poetry, poets, or tags..."
-                className="pl-10 bg-card border-border focus:ring-primary focus:border-primary"
-              />
-            </div>
-          </div>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-4">
-            <Button variant="ghost" size="sm" className="text-foreground hover:text-primary">
-              <Heart className="w-5 h-5" />
-            </Button>
-            <Button variant="ghost" size="sm" className="text-foreground hover:text-primary">
-              <Bell className="w-5 h-5" />
-            </Button>
-            <Button variant="default" size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
-              <Plus className="w-4 h-4 mr-2" />
-              Upload
-            </Button>
-            <Button variant="ghost" size="sm" className="text-foreground hover:text-primary">
-              <User className="w-5 h-5" />
-            </Button>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center space-x-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="text-foreground hover:text-primary"
-            >
-              <Search className="w-5 h-5" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-foreground hover:text-primary"
-            >
-              {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </Button>
-          </div>
-        </div>
-
-        {/* Mobile Search */}
-        {isSearchOpen && (
-          <div className="md:hidden py-4 border-t border-border animate-slide-up">
+          {/* Search Bar */}
+          <div className="flex-1 max-w-md mx-4 hidden md:block">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
                 placeholder="Search poetry, poets, or tags..."
-                className="pl-10 bg-card border-border focus:ring-primary focus:border-primary"
+                className="pl-10 bg-card border-border"
               />
             </div>
           </div>
-        )}
+
+          {/* Action Buttons */}
+          <div className="flex items-center space-x-4">
+            {user ? (
+              <>
+                {/* Upload Button */}
+                <Button 
+                  size="sm" 
+                  onClick={() => setIsUploadModalOpen(true)}
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground hidden sm:flex"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Upload
+                </Button>
+                
+                {/* Notifications */}
+                <Button variant="ghost" size="sm" className="hidden sm:flex">
+                  <Bell className="w-5 h-5" />
+                </Button>
+                
+                {/* User Profile Dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Avatar className="w-8 h-8 cursor-pointer hover:ring-2 hover:ring-primary transition-all">
+                      <AvatarImage src="/placeholder.svg" />
+                      <AvatarFallback className="bg-primary text-primary-foreground">
+                        {user.email?.charAt(0).toUpperCase() || <User className="w-4 h-4" />}
+                      </AvatarFallback>
+                    </Avatar>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuItem onClick={() => setIsUploadModalOpen(true)} className="sm:hidden">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Upload Poetry
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={signOut}>
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            ) : (
+              <Button 
+                onClick={() => navigate('/auth')}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground"
+              >
+                Sign In
+              </Button>
+            )}
+            
+            {/* Mobile Menu Toggle */}
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="sm:hidden"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              <Menu className="w-5 h-5" />
+            </Button>
+          </div>
+        </div>
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-border animate-slide-up">
+          <div className="sm:hidden py-4 border-t border-border animate-slide-down">
             <div className="flex flex-col space-y-2">
-              <Button variant="ghost" className="justify-start text-foreground hover:text-primary">
-                <Heart className="w-5 h-5 mr-2" />
-                Liked Poems
-              </Button>
-              <Button variant="ghost" className="justify-start text-foreground hover:text-primary">
-                <Bell className="w-5 h-5 mr-2" />
-                Notifications
-              </Button>
-              <Button variant="default" className="justify-start bg-primary text-primary-foreground hover:bg-primary/90">
-                <Plus className="w-4 h-4 mr-2" />
-                Upload Poetry
-              </Button>
-              <Button variant="ghost" className="justify-start text-foreground hover:text-primary">
-                <User className="w-5 h-5 mr-2" />
-                Profile
-              </Button>
+              {/* Mobile Search */}
+              <div className="relative mb-4">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                <Input
+                  placeholder="Search poetry..."
+                  className="pl-10 bg-card border-border"
+                />
+              </div>
+              
+              {user && (
+                <Button 
+                  variant="ghost" 
+                  className="justify-start"
+                  onClick={() => {
+                    setIsUploadModalOpen(true);
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  <Plus className="w-5 h-5 mr-2" />
+                  Upload Poetry
+                </Button>
+              )}
             </div>
           </div>
         )}
       </div>
+      
+      <UploadModal 
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+        onSuccess={handleUploadSuccess}
+      />
     </header>
   );
 };

@@ -1,114 +1,96 @@
+import { useAuth } from "@/hooks/useAuth";
+import { usePoetryPosts } from "@/hooks/usePoetryPosts";
 import PoetryCard from "./PoetryCard";
-
-// Mock data for demonstration
-const mockPoetry = [
-  {
-    id: "1",
-    imageUrl: "src/assets/sample-poetry-1.jpg",
-    caption: "In the silence between heartbeats, I find the rhythm of the universe...",
-    author: {
-      name: "Maya Rivera",
-      username: "maya_poetry",
-      avatar: "/placeholder.svg"
-    },
-    likes: 1284,
-    comments: 23,
-    isLiked: false,
-    isBookmarked: true
-  },
-  {
-    id: "2", 
-    imageUrl: "src/assets/sample-poetry-2.jpg",
-    caption: "Moonlit thoughts dancing on paper, each word a whisper of eternity.",
-    author: {
-      name: "Alex Chen",
-      username: "alexwrites",
-      avatar: "/placeholder.svg"
-    },
-    likes: 892,
-    comments: 45,
-    isLiked: true,
-    isBookmarked: false
-  },
-  {
-    id: "3",
-    imageUrl: "src/assets/sample-poetry-3.jpg",
-    caption: "The ocean speaks in verses that only the heart can understand.",
-    author: {
-      name: "Sarah Williams",
-      username: "ocean_poet",
-      avatar: "/placeholder.svg"
-    },
-    likes: 2156,
-    comments: 67,
-    isLiked: false,
-    isBookmarked: false
-  },
-  {
-    id: "4",
-    imageUrl: "/placeholder.svg",
-    caption: "Coffee stains and midnight dreams, painting stories on worn pages.",
-    author: {
-      name: "David Kim",
-      username: "midnight_muse",
-      avatar: "/placeholder.svg"
-    },
-    likes: 743,
-    comments: 12,
-    isLiked: true,
-    isBookmarked: true
-  },
-  {
-    id: "5",
-    imageUrl: "/placeholder.svg",
-    caption: "Between the lines of yesterday and tomorrow, I write today.",
-    author: {
-      name: "Luna Martinez",
-      username: "luna_verses",
-      avatar: "/placeholder.svg"
-    },
-    likes: 1567,
-    comments: 34,
-    isLiked: false,
-    isBookmarked: false
-  },
-  {
-    id: "6",
-    imageUrl: "/placeholder.svg",
-    caption: "Star-crossed words finding their way home to waiting hearts.",
-    author: {
-      name: "James Thompson",
-      username: "cosmic_poet",
-      avatar: "/placeholder.svg"
-    },
-    likes: 934,
-    comments: 28,
-    isLiked: true,
-    isBookmarked: true
-  }
-];
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 
 const PoetryFeed = () => {
+  const { posts, loading, error } = usePoetryPosts();
+  const { user } = useAuth();
+
+  if (loading) {
+    return (
+      <section className="py-8">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-center items-center py-12">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            <span className="ml-2 text-muted-foreground">Loading poetry...</span>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="py-8">
+        <div className="container mx-auto px-4">
+          <div className="text-center py-12">
+            <p className="text-destructive">Error loading poetry: {error}</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (posts.length === 0) {
+    return (
+      <section className="py-8">
+        <div className="container mx-auto px-4">
+          <div className="text-center py-12">
+            <h3 className="text-lg font-semibold text-foreground mb-2">No poetry shared yet</h3>
+            <p className="text-muted-foreground mb-4">Be the first to share your beautiful verses!</p>
+            {!user && (
+              <p className="text-sm text-muted-foreground">
+                <Button variant="link" className="p-0 h-auto">Sign in</Button> to start sharing poetry
+              </p>
+            )}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="py-8">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {mockPoetry.map((poem, index) => (
-            <div
-              key={poem.id}
-              className="animate-fade-in"
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
-              <PoetryCard {...poem} />
-            </div>
-          ))}
+          {posts.map((post, index) => {
+            const transformedPost = {
+              id: post.id,
+              imageUrl: post.image_url,
+              caption: post.caption || post.title || "",
+              author: {
+                name: post.author?.display_name || "Anonymous Poet",
+                username: post.author?.username || "anonymous",
+                avatar: post.author?.avatar_url || "/placeholder.svg"
+              },
+              likes: post.like_count || 0,
+              comments: post.comment_count || 0,
+              isLiked: user ? post.user_likes?.some(like => like.user_id === user.id) || false : false,
+              isBookmarked: false // We'll implement bookmarks later
+            };
+
+            return (
+              <div
+                key={post.id}
+                className="animate-fade-in"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <PoetryCard {...transformedPost} />
+              </div>
+            );
+          })}
         </div>
         
         {/* Load More Button */}
         <div className="text-center mt-12">
-          <button className="bg-card hover:bg-card/80 text-card-foreground border border-border rounded-lg px-8 py-3 transition-all duration-300 hover:border-primary hover:shadow-gold">
+          <Button 
+            variant="outline"
+            className="bg-card hover:bg-card/80 text-card-foreground border-border hover:border-primary"
+          >
             Load More Poetry
-          </button>
+          </Button>
         </div>
       </div>
     </section>
