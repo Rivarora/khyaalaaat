@@ -32,7 +32,7 @@ const Header = () => {
               className="w-8 h-8"
             />
             <h1 className="text-xl font-heading font-semibold text-primary hidden sm:block">
-              Poetry
+              Khyaalaaat
             </h1>
           </div>
 
