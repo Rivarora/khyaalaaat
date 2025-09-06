@@ -1,9 +1,21 @@
 # Welcome to your My project
+# 🌸 Khyaalaaat  
 
-## Project info
+✨ *Where words find their rhythm and emotions turn into poetry.*  
 
-**URL**: https://lovable.dev/projects/deb55d84-918e-42e3-b461-3b0248814726
+---
 
+## 📖 About  
+**Khyaalaaat** is a poetry web project that brings emotions and thoughts to life through beautiful words.  
+Currently, the project runs locally at `http://192.168.1.9:8090/` and is being prepared for deployment on **GitHub Pages**.  
+
+---
+
+## 🚀 Features  
+- 🎨 Clean and elegant design for poems  
+- 💭 A dedicated page for showcasing verses  
+- 📱 Responsive design for mobile & desktop  
+- 🌐 Local server support for testing 
 
 **Use your preferred IDE**
 
