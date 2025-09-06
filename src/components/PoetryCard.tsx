@@ -4,11 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useLikes } from "@/hooks/useLikes";
 
-interface Comment {
-  username: string;
-  text: string;
-}
-
 interface PoetryCardProps {
   id: string;
   imageUrl: string;
@@ -19,7 +14,7 @@ interface PoetryCardProps {
     avatar?: string;
   };
   likes: number;
-  comments?: Comment[]; // Now an array of comments
+  comments: number;
   isLiked?: boolean;
   isBookmarked?: boolean;
 }
@@ -30,7 +25,7 @@ const PoetryCard = ({
   caption,
   author,
   likes,
-  comments = [],
+  comments,
   isLiked = false,
   isBookmarked = false,
 }: PoetryCardProps) => {
@@ -39,7 +34,7 @@ const PoetryCard = ({
   const [likeCount, setLikeCount] = useState(likes);
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
   const [commentInput, setCommentInput] = useState("");
-  const [commentList, setCommentList] = useState<Comment[]>(comments);
+  const [commentList, setCommentList] = useState<string[]>([]);
   const { toggleLike, loading } = useLikes();
 
   const handleLike = async () => {
@@ -61,7 +56,7 @@ const PoetryCard = ({
 
   const handleAddComment = () => {
     if (commentInput.trim() === "") return;
-    setCommentList([{ username: "You", text: commentInput }, ...commentList]);
+    setCommentList([commentInput, ...commentList]);
     setCommentInput("");
   };
 
@@ -164,13 +159,13 @@ const PoetryCard = ({
         )}
 
         {/* Comments */}
-        {commentList.length > 0 && (
+        {comments > 0 && (
           <Button
             variant="ghost"
             className="p-0 h-auto mt-2 text-muted-foreground hover:text-primary"
             onClick={openComments}
           >
-            View all {commentList.length} comments
+            View all {comments} comments
           </Button>
         )}
       </div>
@@ -194,8 +189,8 @@ const PoetryCard = ({
               ) : (
                 commentList.map((c, i) => (
                   <div key={i} className="mb-2 p-2 rounded bg-muted">
-                    <span className="font-medium text-card-foreground">{c.username}:</span>{" "}
-                    <span className="text-card-foreground">{c.text}</span>
+                    <span className="font-medium text-card-foreground">You:</span>{" "}
+                    <span className="text-card-foreground">{c}</span>
                   </div>
                 ))
               )}
