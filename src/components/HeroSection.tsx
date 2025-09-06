@@ -1,7 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Feather, Upload, Users, Sparkles } from "lucide-react";
 
-const HeroSection = () => {
+interface HeroSectionProps {
+  onOpenUploadModal: () => void;
+}
+
+const HeroSection = ({ onOpenUploadModal }: HeroSectionProps) => {
   return (
     <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
       {/* Background with gradient overlay */}
@@ -32,6 +36,7 @@ const HeroSection = () => {
           <Button 
             size="lg" 
             className="bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105 transition-all duration-300 px-8 py-6 text-lg font-medium shadow-gold"
+            onClick={onOpenUploadModal}
           >
             <Upload className="w-5 h-5 mr-2" />
             Start Sharing Poetry
