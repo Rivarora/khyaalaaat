@@ -8,8 +8,6 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import { useState } from "react";
-import Header from "@/components/Header";
-import HeroSection from "@/components/HeroSection";
 import UploadModal from "@/components/UploadModal";
 
 const queryClient = new QueryClient();
@@ -24,16 +22,20 @@ const App = () => {
           <Toaster />
           <Sonner />
           <BrowserRouter>
-            <Header onOpenUploadModal={() => setIsUploadModalOpen(true)} />
-            <HeroSection onOpenUploadModal={() => setIsUploadModalOpen(true)} />
             <UploadModal
               isOpen={isUploadModalOpen}
               onClose={() => setIsUploadModalOpen(false)}
             />
             <Routes>
-              <Route path="/" element={<Index />} />
+              <Route
+                path="/"
+                element={
+                  <Index
+                    onOpenUploadModal={() => setIsUploadModalOpen(true)}
+                  />
+                }
+              />
               <Route path="/auth" element={<Auth />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

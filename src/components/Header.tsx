@@ -9,7 +9,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import UploadModal from "./UploadModal";
 import poetryLogo from "@/assets/poetry-logo.png";
 
-const Header = ({ onOpenUploadModal }) => {
+const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const { user, signOut } = useAuth();
@@ -32,7 +32,7 @@ const Header = ({ onOpenUploadModal }) => {
               className="w-8 h-8"
             />
             <h1 className="text-xl font-heading font-semibold text-primary hidden sm:block">
-              Khyaalaaat
+              Khyaalaaat 
             </h1>
           </div>
 
@@ -54,10 +54,7 @@ const Header = ({ onOpenUploadModal }) => {
                 {/* Upload Button */}
                 <Button 
                   size="sm" 
-                  onClick={() => {
-                    setIsUploadModalOpen(true);
-                    onOpenUploadModal();
-                  }}
+                  onClick={() => setIsUploadModalOpen(true)}
                   className="bg-primary hover:bg-primary/90 text-primary-foreground hidden sm:flex"
                 >
                   <Plus className="w-4 h-4 mr-2" />

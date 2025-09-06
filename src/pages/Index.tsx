@@ -4,12 +4,12 @@ import FilterBar from "@/components/FilterBar";
 import PoetryFeed from "@/components/PoetryFeed";
 import TrendingSection from "@/components/TrendingSection";
 
-const Index = () => {
+const Index = ({ onOpenUploadModal }) => {
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <Header onOpenUploadModal={onOpenUploadModal}>A</Header>
       <main>
-        <HeroSection />
+        <HeroSection onOpenUploadModal={onOpenUploadModal} />
         <FilterBar />
         <PoetryFeed />
         <TrendingSection />
